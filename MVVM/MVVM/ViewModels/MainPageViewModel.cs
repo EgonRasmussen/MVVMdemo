@@ -42,7 +42,7 @@ namespace MVVM.ViewModels
             ClearEntriesCommand = new Command(
                execute: () =>
                {
-                   Name = String.Empty;
+                   Name = string.Empty;
                    Age = 0;
                });
 
