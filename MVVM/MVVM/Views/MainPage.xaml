@@ -19,6 +19,15 @@
                 SelectedItem="{Binding PersonSelectedItem}"  />
                 <Entry Text="{Binding Name}" Placeholder="Name" />
                 <Entry Text="{Binding Age, Converter={StaticResource ageFormatConverter}}" Placeholder="Age"/>
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Clear" Command="{Binding ClearEntriesCommand}" />
+                    <Button Text="Save New Person" Command="{Binding AddCommand}" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Show Age" Command="{Binding ShowAgeCommand}" />
+                    <Button Text="Make Older" Command="{Binding MakeOlderCommand}" />
+                </StackLayout>
+                <Button Text="Delete Person" Command="{Binding DeleteCommand}" />
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
