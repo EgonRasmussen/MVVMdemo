@@ -1,9 +1,8 @@
-﻿// Her er tilføjet Commanding Properties, som der bindes til
-// i View'et. Bemærk at DeleteCommand er lavet med en anonymous 
-// metode, hvor imod alle de andre er lavet med en normal metode.
-// Der er dog et problem med ShowAgeCommand, som skal åbne en 
-// DisplayAlert i View'et - men det kan ikke umiddelbart virke.
-// Så er det godt at vi har Messages (se næste branch).
+﻿// Nu kan det lade sig gøre at ViewModel kan sende en Message 
+// til View'et og bede om at åbne en DisplayAlert. Dette sker både
+// i ShowAgeCommand og AnswerToLifeCommand.
+// I View'ets constructor laves et "abonnement" på Messages, både
+// uden og med en parameter.
 
 using MVVM.Models;
 using System;
@@ -16,6 +15,7 @@ namespace MVVM.ViewModels
     {
         public ObservableCollection<Person> Persons { get; }
 
+
         #region CONSTRUCTOR
         public MainPageViewModel()
         {
@@ -25,6 +25,7 @@ namespace MVVM.ViewModels
                     new Person { Name = "Christian", Age = 32 },
                     new Person { Name = "Helle", Age = 54 }
                 };
+
 
             MakeOlderCommand = new Command(
                 execute: () =>
@@ -41,7 +42,7 @@ namespace MVVM.ViewModels
             ClearEntriesCommand = new Command(
                execute: () =>
                {
-                   Name = string.Empty;
+                   Name = String.Empty;
                    Age = 0;
                });
 
@@ -53,8 +54,12 @@ namespace MVVM.ViewModels
                });
 
             ShowAgeCommand = new Command(
-                execute: () => App.Current.MainPage.DisplayAlert("AgeButtonClicked", "Alder: " + PersonSelectedItem.Age, "OK"),
+                execute: () => MessagingCenter.Send(this, "AgeButtonClicked", PersonSelectedItem),
                 canExecute: () => _personSelectedItem != null
+                );
+
+            AnswerToLife = new Command<string>(
+                execute: (string param) => MessagingCenter.Send(this, "AnswerToLifeClicked", param)
                 );
         }
         #endregion
@@ -99,6 +104,8 @@ namespace MVVM.ViewModels
         public Command ClearEntriesCommand { get; private set; }
 
         public Command ShowAgeCommand { get; private set; }
+
+        public Command AnswerToLife { get; private set; }
 
 
         // Property for local implementation (an alternative syntax).

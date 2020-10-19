@@ -1,4 +1,5 @@
-﻿using MVVM.ViewModels;
+﻿using MVVM.Models;
+using MVVM.ViewModels;
 using Xamarin.Forms;
 
 namespace MVVM
@@ -9,6 +10,22 @@ namespace MVVM
         {
             InitializeComponent();
             BindingContext = new MainPageViewModel();
+
+            MessagingCenter.Subscribe<MainPageViewModel, Person>(new MainPageViewModel(),
+               "AgeButtonClicked", (sender, arg) =>
+               {
+                   DisplayAlert("Age",
+                    $"{arg.Name} er {arg.Age} år!",
+                    "OK");
+               });
+
+            MessagingCenter.Subscribe<MainPageViewModel, string>(new MainPageViewModel(),
+               "AnswerToLifeClicked", (sender, arg) =>
+               {
+                   DisplayAlert("Answer to Life",
+                    $"The answer is {arg}!",
+                    "OK");
+               });
         }
     }
 }
