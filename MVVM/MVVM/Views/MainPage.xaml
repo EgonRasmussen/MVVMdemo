@@ -28,6 +28,9 @@
                     <Button Text="Make Older" Command="{Binding MakeOlderCommand}" />
                 </StackLayout>
                 <Button Text="Delete Person" Command="{Binding DeleteCommand}" />
+                <Button Text="Answer To Life" 
+                Command="{Binding AnswerToLife}"
+                CommandParameter="42" />
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
