@@ -1,5 +1,4 @@
-﻿// En simpel ViewModel, der benytter Change Property Notification, men ikke Commanding.
-// Der laves en instans af VM i View'ets constructor.
+﻿// Nu er der lavet en ViewModelBase klasse, der lader Change Property Notification nedarve til alle ViewModels
 
 using MVVM.Models;
 using System.Collections.ObjectModel;
@@ -8,9 +7,10 @@ using System.Runtime.CompilerServices;
 
 namespace MVVM.ViewModels
 {
-    public class MainPageViewModel : INotifyPropertyChanged
+    public class MainPageViewModel : ViewModelBase
     {
         public ObservableCollection<Person> Persons { get; }
+
 
         #region CONSTRUCTOR
         public MainPageViewModel()
@@ -25,13 +25,17 @@ namespace MVVM.ViewModels
         #endregion
 
         #region PROPERTY CHANGE NOTIFICATION
+        Person _personSelectedItem;
         public Person PersonSelectedItem
         {
+            get { return _personSelectedItem; }
             set
             {
-                Name = value.Name;
-                Age = value.Age;
-                OnPropertyChanged();
+                if (SetProperty(ref _personSelectedItem, value))
+                {
+                    Name = value.Name;
+                    Age = value.Age;
+                }
             }
         }
 
@@ -39,39 +43,15 @@ namespace MVVM.ViewModels
         public string Name
         {
             get { return _name; }
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { SetProperty(ref _name, value); }
         }
 
         int _age;
         public int Age
         {
-            get => _age;
-            set
-            {
-                if (value != _age)
-                {
-                    _age = value;
-                    OnPropertyChanged();
-                }
-            }
+            get { return _age; }
+            set { SetProperty(ref _age, value); }
         }
         #endregion
-
-
-        #region INPC
-        public event PropertyChangedEventHandler PropertyChanged;
-        void OnPropertyChanged([CallerMemberName] string name = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
-
     }
 }
