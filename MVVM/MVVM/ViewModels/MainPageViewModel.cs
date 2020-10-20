@@ -64,7 +64,6 @@ namespace MVVM.ViewModels
         }
         #endregion
 
-
         #region INPC
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged([CallerMemberName] string name = "")
