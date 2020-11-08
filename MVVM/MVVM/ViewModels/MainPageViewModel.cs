@@ -26,8 +26,9 @@ namespace MVVM.ViewModels
                     new Person { Name = "Helle", Age = 54 }
                 };
 
+            ClearEntriesCommand = new Command(() => ExecuteClearEntriesCommand());  // 1. Command with explicit method
 
-            MakeOlderCommand = new Command(
+            MakeOlderCommand = new Command(                                         // 2. Command with inline methods
                 execute: () =>
                 {
                     Age++;
@@ -39,13 +40,6 @@ namespace MVVM.ViewModels
                     return _personSelectedItem != null;
                 });
 
-            ClearEntriesCommand = new Command(
-               execute: () =>
-               {
-                   Name = String.Empty;
-                   Age = 0;
-               });
-
             AddCommand = new Command(
                execute: () => Persons.Add(new Person { Name = Name, Age = Age }),
                canExecute: () =>
@@ -53,10 +47,10 @@ namespace MVVM.ViewModels
                    return Name?.Length > 0 && Age > 0;
                });
 
-            //ShowAgeCommand = new Command(
-            //    execute: () => DisplayAlert("AgeButtonClicked", PersonSelectedItem, "OK"),
-            //    canExecute: () => _personSelectedItem != null
-            //    );
+            ShowAgeCommand = new Command(
+                execute: () => Application.Current.MainPage.DisplayAlert("AgeButtonClicked", $"{PersonSelectedItem.Name} er {PersonSelectedItem.Age}", "OK"),
+                canExecute: () => _personSelectedItem != null
+                );
         }
         #endregion
 
@@ -93,17 +87,22 @@ namespace MVVM.ViewModels
 
         #region COMMANDING
         // Properties for implementing commands in constructor.
+        public Command ClearEntriesCommand { get; private set; }
         public Command MakeOlderCommand { get; private set; }
-
         public Command AddCommand { get; private set; }
 
-        public Command ClearEntriesCommand { get; private set; }
-
+       
         public Command ShowAgeCommand { get; private set; }
 
+        void ExecuteClearEntriesCommand()
+        {
+            PersonSelectedItem = null;
+            Name = string.Empty;
+            Age = 0;
+        }
 
-        // Property for local implementation (an alternative syntax).
-        public Command _onDeleteCommand;
+        
+        public Command _onDeleteCommand;                                            // 3. Command with local Property implementation
         public Command DeleteCommand
         {
             get
@@ -126,7 +125,7 @@ namespace MVVM.ViewModels
             DeleteCommand.ChangeCanExecute();
             MakeOlderCommand.ChangeCanExecute();
             AddCommand.ChangeCanExecute();
-            //ShowAgeCommand.ChangeCanExecute();
+            ShowAgeCommand.ChangeCanExecute();
         }
         #endregion
     }
