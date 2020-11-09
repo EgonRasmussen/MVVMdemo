@@ -96,13 +96,12 @@ namespace MVVM.ViewModels
 
         void ExecuteClearEntriesCommand()
         {
-            PersonSelectedItem = null;
             Name = string.Empty;
             Age = 0;
         }
 
         
-        public Command _onDeleteCommand;                                            // 3. Command with local Property implementation
+        private Command _onDeleteCommand;                                            // 3. Command with local Property implementation
         public Command DeleteCommand
         {
             get
