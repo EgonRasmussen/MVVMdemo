@@ -40,7 +40,7 @@ namespace MVVM.ViewModels
                     return _personSelectedItem != null;
                 });
 
-            AddCommand = new Command(
+            AddCommand = new Command(                                               // 3. Command uden at røre constructoren
                execute: () => Persons.Add(new Person { Name = Name, Age = Age }),
                canExecute: () =>
                {
@@ -50,6 +50,10 @@ namespace MVVM.ViewModels
             ShowAgeCommand = new Command(
                 execute: () => Application.Current.MainPage.DisplayAlert("AgeButtonClicked", $"{PersonSelectedItem.Name} er {PersonSelectedItem.Age}", "OK"),
                 canExecute: () => _personSelectedItem != null
+                );
+
+            AnswerToLife = new Command<string>(                                     // 5. Command med parameter
+                execute: (string param) => Application.Current.MainPage.DisplayAlert("AnswerToLifeClicked", $"{param}", "OK")
                 );
         }
         #endregion
@@ -90,6 +94,7 @@ namespace MVVM.ViewModels
         public Command ClearEntriesCommand { get; private set; }
         public Command MakeOlderCommand { get; private set; }
         public Command AddCommand { get; private set; }
+        public Command AnswerToLife { get; private set; }
 
 
         public Command ShowAgeCommand { get; private set; }
@@ -119,7 +124,7 @@ namespace MVVM.ViewModels
             }
         }
 
-        void RefreshCanExecutes()
+        void RefreshCanExecutes()                                                   // 4. Opdatering af CanExecute()
         {
             DeleteCommand.ChangeCanExecute();
             MakeOlderCommand.ChangeCanExecute();
