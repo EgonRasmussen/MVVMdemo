@@ -5,7 +5,6 @@
 // uden og med en parameter.
 
 using MVVM.Models;
-using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
