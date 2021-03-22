@@ -14,9 +14,9 @@
         <ScrollView>
             <StackLayout x:Name="stackLayout" Margin="20" VerticalOptions="StartAndExpand">
                 <Picker Title="Pick a Person"  
-                ItemsSource="{Binding Persons}"
-                ItemDisplayBinding="{Binding Name}"
-                SelectedItem="{Binding PersonSelectedItem}"  />
+                        ItemsSource="{Binding Persons}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding PersonSelectedItem}"  />
                 <Entry Text="{Binding Name}" Placeholder="Name" />
                 <Entry Text="{Binding Age, Converter={StaticResource ageFormatConverter}}" Placeholder="Age"/>
             </StackLayout>
