@@ -3,10 +3,10 @@
 // metode, hvor imod alle de andre er lavet med en normal metode.
 // Der er dog et problem med ShowAgeCommand, som skal åbne en 
 // DisplayAlert i View'et - men det kan ikke umiddelbart virke.
-// Så er det godt at vi har Messages!
+// Her er lavet en "hård" afhængighed ved at benytte Application.Current.MainPage.DisplayAlert()..
+// Det er dog ikke nogen god løsning! Så er det godt at vi har Messages!
 
 using MVVM.Models;
-using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
@@ -91,16 +91,16 @@ namespace MVVM.ViewModels
         public Command MakeOlderCommand { get; private set; }
         public Command AddCommand { get; private set; }
 
-       
+
         public Command ShowAgeCommand { get; private set; }
 
-        void ExecuteClearEntriesCommand()
+        void ExecuteClearEntriesCommand()                                            // 1. Explicit method for Command
         {
             Name = string.Empty;
             Age = 0;
         }
 
-        
+
         private Command _onDeleteCommand;                                            // 3. Command with local Property implementation
         public Command DeleteCommand
         {
