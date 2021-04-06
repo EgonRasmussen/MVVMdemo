@@ -1,6 +1,6 @@
 # 1.BasicViewModel
 
-Viser MVVM organisering og databinding.
+Her ses MVVM folder- og filorganisering:
 
 I **ViewModels** folderen oprettes en ViewModel klasse pr. Page. Constructoren indlæser data i properties, som View'et kan binde til. Der laves Change-notification til relevante properties.
 
