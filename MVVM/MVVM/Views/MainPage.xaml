@@ -21,6 +21,7 @@
                 SelectedItem="{Binding PersonSelectedItem}"  />
                 <Entry Text="{Binding Name}" Placeholder="Name" />
                 <Entry Text="{Binding Age, Converter={StaticResource ageFormatConverter}}" Placeholder="Age"/>
+                <Entry Text="{Binding Address}" />
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

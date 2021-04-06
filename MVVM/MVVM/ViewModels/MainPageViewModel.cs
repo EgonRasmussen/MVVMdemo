@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace MVVM.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : BaseViewModel
     {
         public ObservableCollection<Person> Persons { get; }
 
@@ -42,16 +42,12 @@ namespace MVVM.ViewModels
         string _name;
         public string Name
         {
-            get { return _name; }
+            get => _name;
             set { SetProperty(ref _name, value); }
         }
 
         int _age;
-        public int Age
-        {
-            get { return _age; }
-            set { SetProperty(ref _age, value); }
-        }
+        public int Age { get => _age; set { SetProperty(ref _age, value); }}
         #endregion
     }
 }
