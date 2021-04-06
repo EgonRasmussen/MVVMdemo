@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace MVVM.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : BaseViewModel
     {
         public ObservableCollection<Person> Persons { get; }
 
@@ -40,7 +40,7 @@ namespace MVVM.ViewModels
                     return _personSelectedItem != null;
                 });
 
-            AddCommand = new Command(                                               // 3. Command uden at røre constructoren
+            AddCommand = new Command(                                               // 2. Command with inline methods
                execute: () => Persons.Add(new Person { Name = Name, Age = Age }),
                canExecute: () =>
                {
@@ -107,24 +107,19 @@ namespace MVVM.ViewModels
 
 
         private Command _onDeleteCommand;                                            // 3. Command with local Property implementation
-        public Command DeleteCommand
-        {
-            get
-            {
-                return _onDeleteCommand ?? (_onDeleteCommand = new Command(
-                    execute: () =>
-                    {
-                        Persons.Remove(_personSelectedItem ?? null);
-                    },
-                    canExecute: () =>
-                    {
-                        return _personSelectedItem != null && Persons.Count > 1;
-                    }
-                    ));
-            }
-        }
+        public Command DeleteCommand => _onDeleteCommand ??= new Command
+            (
+                execute: () =>
+                {
+                    Persons.Remove(_personSelectedItem ?? null);
+                },
+                canExecute: () =>
+                {
+                    return _personSelectedItem != null && Persons.Count > 1;
+                }
+            );
 
-        void RefreshCanExecutes()                                                   // 4. Opdatering af CanExecute()
+        void RefreshCanExecutes()                                                   // 4. Update of CanExecute()
         {
             DeleteCommand.ChangeCanExecute();
             MakeOlderCommand.ChangeCanExecute();
