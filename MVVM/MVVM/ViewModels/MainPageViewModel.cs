@@ -1,6 +1,6 @@
 ﻿// Her er tilføjet Commanding Properties, som der bindes til
 // i View'et. Bemærk at DeleteCommand er lavet med en anonymous 
-// metode, hvor imod alle de andre er lavet med en normal metode.
+// metode, hvorimod alle de andre er lavet med en normal metode.
 // Der er dog et problem med ShowAgeCommand, som skal åbne en 
 // DisplayAlert i View'et - men det kan ikke umiddelbart virke.
 // Her er lavet en "hård" afhængighed ved at benytte Application.Current.MainPage.DisplayAlert()..

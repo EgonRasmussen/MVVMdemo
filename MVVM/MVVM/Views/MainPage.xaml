@@ -33,6 +33,7 @@
                 <Button Text="AnswerToLife" 
                         Command="{Binding AnswerToLife}"
                         CommandParameter="42" />
+                
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
