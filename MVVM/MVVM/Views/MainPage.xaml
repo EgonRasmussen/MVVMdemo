@@ -2,8 +2,6 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:converters="clr-namespace:MVVM.Converters" 
-             xmlns:viewmodels="clr-namespace:MVVM.ViewModels" 
-             x:DataType="viewmodels:MainPageViewModel"
              x:Class="MVVM.MainPage">
 
     <ContentPage.Resources>
@@ -14,7 +12,7 @@
 
     <ContentPage.Content>
         <ScrollView>
-            <StackLayout x:Name="stackLayout" Margin="20" VerticalOptions="StartAndExpand">
+            <StackLayout x:Name="stackLayout" Margin="20" VerticalOptions="StartAndExpand" >
                 <Picker Title="Pick a Person"  
                         ItemsSource="{Binding Persons}"
                         ItemDisplayBinding="{Binding Name}"
