@@ -25,8 +25,10 @@ namespace MVVM.ViewModels
         #endregion
 
         #region PROPERTY CHANGE NOTIFICATION
+        Person _personSelectedItem = null;
         public Person PersonSelectedItem
         {
+            get => _personSelectedItem;
             set
             {
                 Name = value.Name;
