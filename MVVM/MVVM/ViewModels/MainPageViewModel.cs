@@ -1,13 +1,12 @@
 ﻿// Her er tilføjet Commanding Properties, som der bindes til
-// i View'et. Bemærk at DeleteCommand er lavet med en anonymous 
-// metode, hvorimod alle de andre er lavet med en normal metode.
+// i View'et. 
 // Der er dog et problem med ShowAgeCommand, som skal åbne en 
-// DisplayAlert i View'et - men det kan ikke umiddelbart virke.
-// Her er lavet en "hård" afhængighed ved at benytte Application.Current.MainPage.DisplayAlert()..
-// Det er dog ikke nogen god løsning! Så er det godt at vi har Messages!
+//  DisplayAlert i View'et - men det kan ikke umiddelbart virke.
+//  Her er lavet en "hård" afhængighed ved at benytte Application.Current.MainPage.DisplayAlert()..
 
 using MVVM.Models;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace MVVM.ViewModels
@@ -25,36 +24,6 @@ namespace MVVM.ViewModels
                     new Person { Name = "Christian", Age = 32 },
                     new Person { Name = "Helle", Age = 54 }
                 };
-
-            ClearEntriesCommand = new Command(() => ExecuteClearEntriesCommand());  // 1. Command with explicit method
-
-            MakeOlderCommand = new Command(                                         // 2. Command with inline methods
-                execute: () =>
-                {
-                    Age++;
-                    _personSelectedItem.Age = Age;
-                    RefreshCanExecutes();
-                },
-                canExecute: () =>
-                {
-                    return _personSelectedItem != null;
-                });
-
-            AddCommand = new Command(                                               // 2. Command with inline methods
-               execute: () => Persons.Add(new Person { Name = Name, Age = Age }),
-               canExecute: () =>
-               {
-                   return Name?.Length > 0 && Age > 0;
-               });
-
-            ShowAgeCommand = new Command(
-                execute: () => Application.Current.MainPage.DisplayAlert("AgeButtonClicked", $"{PersonSelectedItem.Name} er {PersonSelectedItem.Age}", "OK"),
-                canExecute: () => _personSelectedItem != null
-                );
-
-            AnswerToLife = new Command<string>(                                     // 5. Command med parameter
-                execute: (string param) => Application.Current.MainPage.DisplayAlert("AnswerToLifeClicked", $"{param}", "OK")
-                );
         }
         #endregion
 
@@ -90,42 +59,56 @@ namespace MVVM.ViewModels
         #endregion
 
         #region COMMANDING
-        // Properties for implementing commands in constructor.
-        public Command ClearEntriesCommand { get; private set; }
-        public Command MakeOlderCommand { get; private set; }
-        public Command AddCommand { get; private set; }
-        public Command AnswerToLife { get; private set; }
-
-
-        public Command ShowAgeCommand { get; private set; }
-
-        void ExecuteClearEntriesCommand()                                            // 1. Explicit method for Command
+        private Command clearEntriesCommand;
+        public ICommand ClearEntriesCommand => clearEntriesCommand ??= new Command(ClearEntries);   // Explicit method
+        private void ClearEntries()
         {
             Name = string.Empty;
             Age = 0;
         }
 
 
-        private Command _onDeleteCommand;                                            // 3. Command with local Property implementation
-        public Command DeleteCommand => _onDeleteCommand ??= new Command
-            (
-                execute: () =>
-                {
-                    Persons.Remove(_personSelectedItem ?? null);
-                },
-                canExecute: () =>
-                {
-                    return _personSelectedItem != null && Persons.Count > 1;
-                }
-            );
+        private Command addCommand;
+        public ICommand AddCommand => addCommand ??= new Command(
+            execute: () => Persons.Add(new Person { Name = Name, Age = Age }),
+            canExecute: () => Name?.Length > 0 && Age > 0);
 
-        void RefreshCanExecutes()                                                   // 4. Update of CanExecute()
+
+        private Command showAgeCommand;
+        public ICommand ShowAgeCommand => showAgeCommand ??= new Command(
+            execute: () => Application.Current.MainPage.DisplayAlert("AgeButtonClicked", $"{PersonSelectedItem.Name} er {PersonSelectedItem.Age}", "OK"),
+            canExecute: () => _personSelectedItem != null);
+
+
+        private Command makeOlderCommand;
+        public ICommand MakeOlderCommand => makeOlderCommand ??= new Command(
+            execute: () =>
+            {
+                Age++;
+                _personSelectedItem.Age = Age;
+                RefreshCanExecutes();
+            },
+            canExecute: () => _personSelectedItem != null);
+
+
+        private Command _onDeleteCommand;
+        public ICommand DeleteCommand => _onDeleteCommand ??= new Command(
+                execute: () => Persons.Remove(_personSelectedItem ?? null),
+                canExecute: () => _personSelectedItem != null && Persons.Count > 1);
+
+
+        private Command answerToLife;
+        public ICommand AnswerToLife => answerToLife ??= new Command<string>(       // Command med parameter
+                execute: (string param) => Application.Current.MainPage.DisplayAlert("AnswerToLifeClicked", $"{param}", "OK"));
+
+        void RefreshCanExecutes()                                                   // Update of CanExecute()
         {
-            DeleteCommand.ChangeCanExecute();
-            MakeOlderCommand.ChangeCanExecute();
-            AddCommand.ChangeCanExecute();
-            ShowAgeCommand.ChangeCanExecute();
+            (DeleteCommand as Command).ChangeCanExecute();
+            (MakeOlderCommand as Command).ChangeCanExecute();
+            (AddCommand as Command).ChangeCanExecute();
+            (ShowAgeCommand as Command).ChangeCanExecute();
         }
-        #endregion
     }
+    #endregion
 }
+
