@@ -7,11 +7,12 @@
 
 using MVVM.Models;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace MVVM.ViewModels
 {
-    public class MainPageViewModel : BaseViewModel
+    public class MainPageViewModel : ViewModelBase
     {
         public ObservableCollection<Person> Persons { get; }
 
@@ -31,7 +32,7 @@ namespace MVVM.ViewModels
         Person _personSelectedItem;
         public Person PersonSelectedItem
         {
-            get { return _personSelectedItem; }
+            get => _personSelectedItem; 
             set
             {
                 if (SetProperty(ref _personSelectedItem, value))
@@ -61,7 +62,7 @@ namespace MVVM.ViewModels
         #region COMMANDs
         // 1. Command with explicit Execute method
         private Command clearEntriesCommand;
-        public Command ClearEntriesCommand => clearEntriesCommand ??= new Command(ExecuteClearEntries);
+        public ICommand ClearEntriesCommand => clearEntriesCommand ??= new Command(ExecuteClearEntries);
 
         private void ExecuteClearEntries()
         {
@@ -71,7 +72,7 @@ namespace MVVM.ViewModels
 
         // 2. Command with explicit Execute and CanExecute methods
         private Command addCommand;
-        public Command AddCommand => addCommand ??= new Command(ExecuteAddCommand, CanExecuteAddCommand);
+        public ICommand AddCommand => addCommand ??= new Command(ExecuteAddCommand, CanExecuteAddCommand);
 
         private void ExecuteAddCommand(object obj)
         {
@@ -86,14 +87,14 @@ namespace MVVM.ViewModels
 
         // 3. Commands with inline methods
         private Command showAgeCommand;
-        public Command ShowAgeCommand => showAgeCommand ??= new Command(
+        public ICommand ShowAgeCommand => showAgeCommand ??= new Command(
             execute: () => MessagingCenter.Send(this, "AgeButtonClicked", PersonSelectedItem),  // Ændret til Messaging med et Person object som parameter
             canExecute: () => _personSelectedItem != null
             );
 
 
         private Command makeOlderCommand;
-        public Command MakeOlderCommand => makeOlderCommand ??= new Command(
+        public ICommand MakeOlderCommand => makeOlderCommand ??= new Command(
             execute: () =>
             {
                 Age++;
@@ -106,7 +107,7 @@ namespace MVVM.ViewModels
 
         // 4. Command with parameter
         private Command answerToLifeCommand;
-        public Command AnswerToLifeCommand => answerToLifeCommand ?? new Command<string>
+        public ICommand AnswerToLifeCommand => answerToLifeCommand ?? new Command<string>
             (
                 execute: (string param) => MessagingCenter.Send(this, "AnswerToLifeClicked", param) // Ændret til Messanging med en string som parameter
             );
@@ -115,9 +116,9 @@ namespace MVVM.ViewModels
         // 5. Update of CanExecute()
         void RefreshCanExecutes()
         {
-            AddCommand.ChangeCanExecute();
-            ShowAgeCommand.ChangeCanExecute();
-            MakeOlderCommand.ChangeCanExecute();
+            (AddCommand as Command).ChangeCanExecute();
+            (ShowAgeCommand as Command).ChangeCanExecute();
+            (MakeOlderCommand as Command).ChangeCanExecute();
         }
         #endregion
     }

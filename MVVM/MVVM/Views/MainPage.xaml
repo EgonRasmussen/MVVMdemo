@@ -30,7 +30,7 @@
                     <Button Text="Make Older" Command="{Binding MakeOlderCommand}" />
                 </StackLayout>
                 <Button Text="Answer To Life" 
-                        Command="{Binding AnswerToLife}"
+                        Command="{Binding AnswerToLifeCommand}"
                         CommandParameter="42" />
             </StackLayout>
         </ScrollView>
