@@ -69,7 +69,7 @@ namespace MVVM.ViewModels
             Age = 0;
         }
 
-        // 2. Command with explicit Execute and CanExecute methods
+        // Command with explicit Execute and CanExecute methods
         private Command addCommand;
         public ICommand AddCommand => addCommand ??= new Command(ExecuteAddCommand, CanExecuteAddCommand);
 
@@ -84,7 +84,7 @@ namespace MVVM.ViewModels
         }
 
 
-        // 3. Commands with inline methods
+        // 2. Commands with inline methods
         private Command showAgeCommand;
         public ICommand ShowAgeCommand => showAgeCommand ??= new Command(
             execute: () => Application.Current.MainPage.DisplayAlert("AgeButtonClicked", $"{PersonSelectedItem.Name} er {PersonSelectedItem.Age}", "OK"),
@@ -109,7 +109,7 @@ namespace MVVM.ViewModels
                 canExecute: () => _personSelectedItem != null && Persons.Count > 1);
 
 
-        // 4. Command with parameter
+        // 3. Command with parameter
         private Command answerToLifeCommand;
         public ICommand AnswerToLifeCommand => answerToLifeCommand ??= new Command<string>
             (
@@ -117,7 +117,7 @@ namespace MVVM.ViewModels
             );
 
 
-        // 5. Update of CanExecute()
+        // 4. Update of CanExecute()
         void RefreshCanExecutes()                                                
         {
             (DeleteCommand as Command).ChangeCanExecute();
