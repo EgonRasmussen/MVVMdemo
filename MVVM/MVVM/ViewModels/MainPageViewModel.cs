@@ -1,8 +1,9 @@
-﻿// Nu kan det lade sig gøre at ViewModel kan sende en Message 
-// til View'et og bede om at åbne en DisplayAlert. Dette sker både
-// i ShowAgeCommand og AnswerToLifeCommand.
-// I View'ets constructor laves et "abonnement" på Messages, både
-// uden og med en parameter.
+﻿// Her er tilføjet Commanding Properties, som der bindes til
+// i View'et.
+// Der er dog et problem med ShowAgeCommand, som skal åbne en 
+// DisplayAlert i View'et - men det kan ikke umiddelbart virke.
+// Her er lavet en "hård" afhængighed ved at benytte Application.Current.MainPage.DisplayAlert()..
+// Det er dog ikke nogen god løsning! Så er det godt at vi har Messages!
 
 using MVVM.Models;
 using System.Collections.ObjectModel;
@@ -10,10 +11,9 @@ using Xamarin.Forms;
 
 namespace MVVM.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : BaseViewModel
     {
         public ObservableCollection<Person> Persons { get; }
-
 
         #region CONSTRUCTOR
         public MainPageViewModel()
@@ -24,42 +24,6 @@ namespace MVVM.ViewModels
                     new Person { Name = "Christian", Age = 32 },
                     new Person { Name = "Helle", Age = 54 }
                 };
-
-
-            MakeOlderCommand = new Command(
-                execute: () =>
-                {
-                    Age++;
-                    _personSelectedItem.Age = Age;
-                    RefreshCanExecutes();
-                },
-                canExecute: () =>
-                {
-                    return _personSelectedItem != null;
-                });
-
-            ClearEntriesCommand = new Command(
-               execute: () =>
-               {
-                   Name = string.Empty;
-                   Age = 0;
-               });
-
-            AddCommand = new Command(
-               execute: () => Persons.Add(new Person { Name = Name, Age = Age }),
-               canExecute: () =>
-               {
-                   return Name?.Length > 0 && Age > 0;
-               });
-
-            ShowAgeCommand = new Command(
-                execute: () => MessagingCenter.Send(this, "AgeButtonClicked", PersonSelectedItem),
-                canExecute: () => _personSelectedItem != null
-                );
-
-            AnswerToLife = new Command<string>(
-                execute: (string param) => MessagingCenter.Send(this, "AnswerToLifeClicked", param)
-                );
         }
         #endregion
 
@@ -94,44 +58,66 @@ namespace MVVM.ViewModels
         }
         #endregion
 
-        #region COMMANDING
-        // Properties for implementing commands in constructor.
-        public Command MakeOlderCommand { get; private set; }
+        #region COMMANDs
+        // 1. Command with explicit Execute method
+        private Command clearEntriesCommand;
+        public Command ClearEntriesCommand => clearEntriesCommand ??= new Command(ExecuteClearEntries);
 
-        public Command AddCommand { get; private set; }
-
-        public Command ClearEntriesCommand { get; private set; }
-
-        public Command ShowAgeCommand { get; private set; }
-
-        public Command AnswerToLife { get; private set; }
-
-
-        // Property for local implementation (an alternative syntax).
-        public Command _onDeleteCommand;
-        public Command DeleteCommand
+        private void ExecuteClearEntries()
         {
-            get
-            {
-                return _onDeleteCommand ?? (_onDeleteCommand = new Command(
-                    execute: () =>
-                    {
-                        Persons.Remove(_personSelectedItem ?? null);
-                    },
-                    canExecute: () =>
-                    {
-                        return _personSelectedItem != null && Persons.Count > 1;
-                    }
-                    ));
-            }
+            Name = string.Empty;
+            Age = 0;
         }
 
+        // 2. Command with explicit Execute and CanExecute methods
+        private Command addCommand;
+        public Command AddCommand => addCommand ??= new Command(ExecuteAddCommand, CanExecuteAddCommand);
+
+        private void ExecuteAddCommand(object obj)
+        {
+            Persons.Add(new Person { Name = Name, Age = Age });
+        }
+
+        private bool CanExecuteAddCommand(object arg)
+        {
+            return Name?.Length > 0 && Age > 0;
+        }
+
+
+        // 3. Commands with inline methods
+        private Command showAgeCommand;
+        public Command ShowAgeCommand => showAgeCommand ??= new Command(
+            execute: () => MessagingCenter.Send(this, "AgeButtonClicked", PersonSelectedItem),  // Ændret til Messaging med et Person object som parameter
+            canExecute: () => _personSelectedItem != null
+            );
+
+
+        private Command makeOlderCommand;
+        public Command MakeOlderCommand => makeOlderCommand ??= new Command(
+            execute: () =>
+            {
+                Age++;
+                _personSelectedItem.Age = Age;
+                RefreshCanExecutes();
+            },
+            canExecute: () => _personSelectedItem != null
+            );
+
+
+        // 4. Command with parameter
+        private Command answerToLifeCommand;
+        public Command AnswerToLifeCommand => answerToLifeCommand ?? new Command<string>
+            (
+                execute: (string param) => MessagingCenter.Send(this, "AnswerToLifeClicked", param) // Ændret til Messanging med en string som parameter
+            );
+
+
+        // 5. Update of CanExecute()
         void RefreshCanExecutes()
         {
-            DeleteCommand.ChangeCanExecute();
-            MakeOlderCommand.ChangeCanExecute();
             AddCommand.ChangeCanExecute();
             ShowAgeCommand.ChangeCanExecute();
+            MakeOlderCommand.ChangeCanExecute();
         }
         #endregion
     }
