@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace MVVM.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : BaseViewModel
     {
         public ObservableCollection<Person> Persons { get; }
 
