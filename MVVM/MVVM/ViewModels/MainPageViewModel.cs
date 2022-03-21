@@ -70,7 +70,7 @@ namespace MVVM.ViewModels
             Age = 0;
         }
 
-        // 2. Command with explicit Execute and CanExecute methods
+        // Command with explicit Execute and CanExecute methods
         private Command addCommand;
         public ICommand AddCommand => addCommand ??= new Command(ExecuteAddCommand, CanExecuteAddCommand);
 
@@ -85,7 +85,7 @@ namespace MVVM.ViewModels
         }
 
 
-        // 3. Commands with inline methods
+        // 2. Commands with inline methods
         private Command showAgeCommand;
         public ICommand ShowAgeCommand => showAgeCommand ??= new Command(
             execute: () => MessagingCenter.Send(this, "AgeButtonClicked", PersonSelectedItem),  // Ændret til Messaging med et Person object som parameter
@@ -104,8 +104,13 @@ namespace MVVM.ViewModels
             canExecute: () => _personSelectedItem != null
             );
 
+        private Command _onDeleteCommand;
+        public ICommand DeleteCommand => _onDeleteCommand ??= new Command(
+                execute: () => Persons.Remove(_personSelectedItem ?? null),
+                canExecute: () => _personSelectedItem != null && Persons.Count > 1);
 
-        // 4. Command with parameter
+
+        // 3. Command with parameter
         private Command answerToLifeCommand = null;
         public ICommand AnswerToLifeCommand => answerToLifeCommand ?? new Command<string>
             (
@@ -113,9 +118,10 @@ namespace MVVM.ViewModels
             );
 
 
-        // 5. Update of CanExecute()
+        // 4. Update of CanExecute()
         void RefreshCanExecutes()
         {
+            (DeleteCommand as Command).ChangeCanExecute();
             (AddCommand as Command).ChangeCanExecute();
             (ShowAgeCommand as Command).ChangeCanExecute();
             (MakeOlderCommand as Command).ChangeCanExecute();

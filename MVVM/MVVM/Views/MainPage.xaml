@@ -29,6 +29,7 @@
                     <Button Text="Show Age" Command="{Binding ShowAgeCommand}" />
                     <Button Text="Make Older" Command="{Binding MakeOlderCommand}" />
                 </StackLayout>
+                <Button Text="Delete Person" Command="{Binding DeleteCommand}" />
                 <Button Text="Answer To Life" 
                         Command="{Binding AnswerToLifeCommand}"
                         CommandParameter="42" />
