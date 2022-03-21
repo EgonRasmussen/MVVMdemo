@@ -59,49 +59,61 @@ namespace MVVM.ViewModels
         #endregion
 
         #region COMMANDING
+        // 1. Command with explicit Execute method
         private Command clearEntriesCommand;
-        public ICommand ClearEntriesCommand => clearEntriesCommand ??= new Command(ClearEntries);   // Explicit method
-        private void ClearEntries()
+        public ICommand ClearEntriesCommand => clearEntriesCommand ??= new Command(ExecuteClearEntries);
+
+        private void ExecuteClearEntries()
         {
             Name = string.Empty;
             Age = 0;
         }
 
-
+        // 2. Command with explicit Execute and CanExecute methods
         private Command addCommand;
-        public ICommand AddCommand => addCommand ??= new Command(
-            execute: () => Persons.Add(new Person { Name = Name, Age = Age }),
-            canExecute: () => Name?.Length > 0 && Age > 0);
+        public ICommand AddCommand => addCommand ??= new Command(ExecuteAddCommand, CanExecuteAddCommand);
+
+        private void ExecuteAddCommand(object obj)
+        {
+            Persons.Add(new Person { Name = Name, Age = Age });
+        }
+
+        private bool CanExecuteAddCommand(object arg)
+        {
+            return Name?.Length > 0 && Age > 0;
+        }
 
 
+        // 3. Commands with inline methods
         private Command showAgeCommand;
         public ICommand ShowAgeCommand => showAgeCommand ??= new Command(
             execute: () => Application.Current.MainPage.DisplayAlert("AgeButtonClicked", $"{PersonSelectedItem.Name} er {PersonSelectedItem.Age}", "OK"),
-            canExecute: () => _personSelectedItem != null);
+            canExecute: () => _personSelectedItem != null
+            );
 
 
         private Command makeOlderCommand;
-        public ICommand MakeOlderCommand => makeOlderCommand ??= new Command(
+        public Command MakeOlderCommand => makeOlderCommand ??= new Command(
             execute: () =>
             {
                 Age++;
                 _personSelectedItem.Age = Age;
                 RefreshCanExecutes();
             },
-            canExecute: () => _personSelectedItem != null);
+            canExecute: () => _personSelectedItem != null
+            );
 
 
-        private Command _onDeleteCommand;
-        public ICommand DeleteCommand => _onDeleteCommand ??= new Command(
-                execute: () => Persons.Remove(_personSelectedItem ?? null),
-                canExecute: () => _personSelectedItem != null && Persons.Count > 1);
+        // 4. Command with parameter
+        private Command answerToLifeCommand;
+        public Command AnswerToLifeCommand => answerToLifeCommand ?? new Command<string>
+            (
+                execute: (string param) => Application.Current.MainPage.DisplayAlert("AnswerToLifeClicked", $"{param}", "OK")
+            );
 
 
-        private Command answerToLife;
-        public ICommand AnswerToLife => answerToLife ??= new Command<string>(       // Command med parameter
-                execute: (string param) => Application.Current.MainPage.DisplayAlert("AnswerToLifeClicked", $"{param}", "OK"));
-
-        void RefreshCanExecutes()                                                   // Update of CanExecute()
+        // 5. Update of CanExecute()
+        void RefreshCanExecutes()                                                
         {
             (DeleteCommand as Command).ChangeCanExecute();
             (MakeOlderCommand as Command).ChangeCanExecute();
