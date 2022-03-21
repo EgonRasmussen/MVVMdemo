@@ -93,7 +93,7 @@ namespace MVVM.ViewModels
 
 
         private Command makeOlderCommand;
-        public Command MakeOlderCommand => makeOlderCommand ??= new Command(
+        public ICommand MakeOlderCommand => makeOlderCommand ??= new Command(
             execute: () =>
             {
                 Age++;
@@ -103,10 +103,15 @@ namespace MVVM.ViewModels
             canExecute: () => _personSelectedItem != null
             );
 
+        private Command _onDeleteCommand;
+        public ICommand DeleteCommand => _onDeleteCommand ??= new Command(
+                execute: () => Persons.Remove(_personSelectedItem ?? null),
+                canExecute: () => _personSelectedItem != null && Persons.Count > 1);
+
 
         // 4. Command with parameter
         private Command answerToLifeCommand;
-        public Command AnswerToLifeCommand => answerToLifeCommand ?? new Command<string>
+        public ICommand AnswerToLifeCommand => answerToLifeCommand ??= new Command<string>
             (
                 execute: (string param) => Application.Current.MainPage.DisplayAlert("AnswerToLifeClicked", $"{param}", "OK")
             );

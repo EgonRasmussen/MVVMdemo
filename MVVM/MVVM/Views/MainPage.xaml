@@ -31,7 +31,7 @@
                 </StackLayout>
                 <Button Text="Delete Person" Command="{Binding DeleteCommand}" />
                 <Button Text="AnswerToLife" 
-                        Command="{Binding AnswerToLife}"
+                        Command="{Binding AnswerToLifeCommand}"
                         CommandParameter="42" />
                 
             </StackLayout>
