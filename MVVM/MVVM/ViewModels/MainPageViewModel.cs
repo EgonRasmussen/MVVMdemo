@@ -106,7 +106,7 @@ namespace MVVM.ViewModels
 
 
         // 4. Command with parameter
-        private Command answerToLifeCommand;
+        private Command answerToLifeCommand = null;
         public ICommand AnswerToLifeCommand => answerToLifeCommand ?? new Command<string>
             (
                 execute: (string param) => MessagingCenter.Send(this, "AnswerToLifeClicked", param) // Ændret til Messanging med en string som parameter
