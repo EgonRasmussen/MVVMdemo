@@ -28,7 +28,7 @@ namespace MVVM.ViewModels
         Person _personSelectedItem;
         public Person PersonSelectedItem
         {
-            get { return _personSelectedItem; }
+            get => _personSelectedItem;
             set
             {
                 if (SetProperty(ref _personSelectedItem, value))
