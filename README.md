@@ -1,6 +1,6 @@
 # 4.Messaging
 
-Den indbyggede MessagingCenter klasse benyttes i ShowAgeCommand (med Person som parameter) og i AnswerToLife (med string som parameter). Her ses de to Commands i constructoren:
+Den indbyggede MessagingCenter klasse benyttes i `MainPageViewModel` klassen i `ShowAgeCommand` (med `Person` som parameter) og i `AnswerToLife` (med `string` som parameter). Her ses de to Commands i constructoren:
 
 ```csharp
 ShowAgeCommand = new Command(
@@ -15,7 +15,7 @@ AnswerToLife = new Command<string>(
 
 &nbsp;
 
-Der abonneres på begge Message med begge parameter-typer i constructoren for View'et, som vist her:
+Der abonneres på begge Messages med begge parameter-typer i constructoren for `MainPage.xaml.cs` View-klassen, som vist her:
 
 ```csharp
 MessagingCenter.Subscribe<MainPageViewModel, Person>(new MainPageViewModel(),
